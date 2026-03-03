@@ -1,107 +1,87 @@
-# 📊 Big Data Anomaly Dashboard — JIRA-like Test Tracker
+# Anomaly Dashboard — Big Data Test Tracker
 
-> **Big Data Testing Project** | Python · SQLite · HTML Dashboard · Test Management
-
----
-
-## 🇫🇷 Description
-
-Dashboard de suivi des anomalies de test Big Data, style **JIRA/XRAY**.  
-Permet de créer, filtrer, mettre à jour et visualiser les anomalies détectées durant les campagnes de test.
-Génère un rapport HTML interactif avec KPIs, distribution par statut, sévérité et composant.
-
-## 🇬🇧 Description
-
-Big Data test anomaly tracking dashboard in the style of **JIRA/XRAY**.  
-Create, filter, update, and visualize anomalies detected during test campaigns.  
-Generates an interactive HTML report with KPIs, status distribution, severity, and component breakdown.
+Test anomaly tracking tool for Big Data projects, inspired by JIRA/XRAY workflows. Manages tickets with severity, status, sprint, and comments. Generates a local HTML dashboard showing KPIs and anomaly distribution across components.
 
 ---
 
-## 🗂️ Structure du projet
+## Project structure
 
 ```
 04_anomaly_dashboard/
 ├── src/
-│   ├── anomaly_tracker.py    # CRUD SQLite — tickets d'anomalie
-│   ├── dashboard.py          # Générateur HTML dashboard
-│   └── run_dashboard.py      # Entry point — seed + génère le dashboard
+│   ├── anomaly_tracker.py    # SQLite CRUD — anomaly tickets
+│   ├── dashboard.py          # HTML dashboard generator
+│   └── run_dashboard.py      # Entry point — seed data + generate report
 ├── tests/
-│   └── test_anomaly_tracker.py   # TC-DASH-001 → TC-DASH-010
-├── data/
-│   ├── anomalies.db          # Base SQLite (générée)
-│   └── dashboard.html        # Dashboard HTML (généré)
-└── docs/
+│   └── test_anomaly_tracker.py   # TC-DASH-001 to TC-DASH-010
+└── data/
+    ├── anomalies.db          # SQLite database (generated)
+    └── dashboard.html        # HTML dashboard (generated)
 ```
 
 ---
 
-## 🎯 Fonctionnalités
-
-| Fonctionnalité | Description |
-|---|---|
-| Création d'anomalie | Titre, description, sévérité, statut, sprint, tags |
-| Mise à jour de statut | OPEN → IN_PROGRESS → RESOLVED → CLOSED |
-| Commentaires | Fil de discussion par anomalie |
-| Filtres | Par statut, sévérité, composant |
-| KPIs | Total, Open, In Progress, Resolved, Open Critical |
-| Distribution | Barre de progression colorée par statut |
-| Rapport HTML | Dashboard interactif généré en local |
-
----
-
-## 🏷️ Sévérités & Statuts
-
-| Sévérité | Couleur | Exemples |
-|---|---|---|
-| CRITICAL | 🔴 Rouge | Données corrompues, réconciliation impossible |
-| HIGH | 🟠 Orange | FK orpheline, NULL sur clé obligatoire |
-| MEDIUM | 🟡 Jaune | Filtre manquant, format incorrect |
-| LOW | 🔵 Bleu | Colonne inattendue, dérive statistique mineure |
-
-| Statut | Description |
-|---|---|
-| OPEN | Anomalie détectée, non traitée |
-| IN_PROGRESS | Analyse ou correction en cours |
-| RESOLVED | Fix déployé, en attente de validation |
-| CLOSED | Validé et fermé |
-| WONT_FIX | Décision de ne pas corriger |
-
----
-
-## ⚙️ Installation & Exécution
+## Setup
 
 ```bash
 pip install -r requirements.txt
 
-# Générer le dashboard avec données d'exemple
 cd src
 python run_dashboard.py
 
-# Ouvrir le dashboard (macOS)
+# Open dashboard (macOS)
 open ../data/dashboard.html
 
-# Tests unitaires
+# Run tests
 pytest tests/ -v
 ```
 
 ---
 
-## 📸 Anomalies d'exemple pré-chargées
+## Features
 
-10 anomalies réalistes issues des 3 autres projets :
-
-| ID | Titre | Sévérité | Statut | Projet |
-|---|---|---|---|---|
-| ANO-... | NULL customer_id in fact_sales | HIGH | OPEN | DataMart-Q1 |
-| ANO-... | Negative total_amount in S011 | CRITICAL | IN_PROGRESS | DataMart-Q1 |
-| ANO-... | Orphan FK C999 | HIGH | OPEN | DataMart-Q1 |
-| ANO-... | CANCELLED status not filtered | MEDIUM | RESOLVED | Datalake |
-| ANO-... | Gold reconciliation drift 1.8% | HIGH | OPEN | Datalake |
+| Feature | Description |
+|---------|-------------|
+| Create anomaly | Title, description, severity, status, sprint, tags |
+| Update status | OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED |
+| Comments | Discussion thread per anomaly |
+| Filters | By status, severity, component |
+| KPIs | Total, Open, In Progress, Resolved, Open Critical |
+| HTML report | Interactive dashboard generated locally |
 
 ---
 
-## 👩‍💻 Auteure
+## Severity and status definitions
 
-**Imane Moussafir** — Ingénieure Data & BI  
-*Projet réalisé dans le cadre d'une candidature Testeur Big Data / Datalake.*
+| Severity | Examples |
+|----------|---------|
+| CRITICAL | Data corruption, reconciliation failure |
+| HIGH | Orphan FK, NULL on mandatory column |
+| MEDIUM | Missing filter, wrong format |
+| LOW | Unexpected column, minor statistical drift |
+
+| Status | Description |
+|--------|-------------|
+| OPEN | Detected, not yet assigned |
+| IN_PROGRESS | Under investigation or fix |
+| RESOLVED | Fix deployed, pending validation |
+| CLOSED | Validated and closed |
+| WONT_FIX | Decision not to fix |
+
+---
+
+## Sample anomalies
+
+The dashboard is pre-loaded with 10 realistic anomalies sourced from the other three portfolio projects, covering ETL, Datalake, and SQL validation contexts.
+
+---
+
+## Stack
+
+Python / SQLite / HTML + CSS
+
+---
+
+## Author
+
+Imane Moussafir — Data & BI Engineer
