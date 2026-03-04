@@ -1,87 +1,65 @@
-# Anomaly Dashboard — Big Data Test Tracker
+# anomaly-dashboard
 
-Test anomaly tracking tool for Big Data projects, inspired by JIRA/XRAY workflows. Manages tickets with severity, status, sprint, and comments. Generates a local HTML dashboard showing KPIs and anomaly distribution across components.
+When you're running multiple test campaigns across different pipelines and sprints, tracking anomalies in a spreadsheet stops working pretty fast. This is a lightweight alternative — a local SQLite-backed tracker with a generated HTML dashboard, inspired by how JIRA and XRAY handle test defects.
 
----
+Each anomaly has a title, description, severity (CRITICAL / HIGH / MEDIUM / LOW), status (OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED / WONT_FIX), component, sprint, tags, and a comment thread. The dashboard shows KPI counts and a status distribution bar. Everything runs locally, no server needed.
 
-## Project structure
+## Structure
 
 ```
-04_anomaly_dashboard/
-├── src/
-│   ├── anomaly_tracker.py    # SQLite CRUD — anomaly tickets
-│   ├── dashboard.py          # HTML dashboard generator
-│   └── run_dashboard.py      # Entry point — seed data + generate report
-├── tests/
-│   └── test_anomaly_tracker.py   # TC-DASH-001 to TC-DASH-010
-└── data/
-    ├── anomalies.db          # SQLite database (generated)
-    └── dashboard.html        # HTML dashboard (generated)
+src/
+  anomaly_tracker.py    # CRUD operations on SQLite — create, update, filter, stats
+  dashboard.py          # generates the HTML dashboard from tracker data
+  run_dashboard.py      # seeds sample data and opens the dashboard
+
+tests/
+  test_anomaly_tracker.py   # 10 unit tests
+
+data/
+  anomalies.db          # SQLite file (created on first run)
+  dashboard.html        # the generated report
 ```
 
----
-
-## Setup
+## Running it
 
 ```bash
 pip install -r requirements.txt
-
 cd src
 python run_dashboard.py
+```
 
-# Open dashboard (macOS)
-open ../data/dashboard.html
+This seeds the database with 10 sample anomalies pulled from the other three projects in this portfolio (ETL pipeline issues, Datalake drift, SQL validation failures) and opens the dashboard in your browser.
 
-# Run tests
+```bash
 pytest tests/ -v
 ```
 
----
+## Using the tracker in your own tests
 
-## Features
+```python
+from anomaly_tracker import AnomalyTracker, Anomaly
 
-| Feature | Description |
-|---------|-------------|
-| Create anomaly | Title, description, severity, status, sprint, tags |
-| Update status | OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED |
-| Comments | Discussion thread per anomaly |
-| Filters | By status, severity, component |
-| KPIs | Total, Open, In Progress, Resolved, Open Critical |
-| HTML report | Interactive dashboard generated locally |
+tracker = AnomalyTracker("anomalies.db")
 
----
+# Log an anomaly from a test
+tracker.create(Anomaly(
+    title="NULL customer_id in fact_sales",
+    description="10 rows passed Silver layer with customer_id=NULL",
+    severity="HIGH",
+    status="OPEN",
+    project="DataMart-Q1",
+    component="ETL",
+    detected_by="TC-REG-002",
+    sprint="Sprint-01"
+))
 
-## Severity and status definitions
+# Filter
+open_high = tracker.list_all(status="OPEN", severity="HIGH")
 
-| Severity | Examples |
-|----------|---------|
-| CRITICAL | Data corruption, reconciliation failure |
-| HIGH | Orphan FK, NULL on mandatory column |
-| MEDIUM | Missing filter, wrong format |
-| LOW | Unexpected column, minor statistical drift |
-
-| Status | Description |
-|--------|-------------|
-| OPEN | Detected, not yet assigned |
-| IN_PROGRESS | Under investigation or fix |
-| RESOLVED | Fix deployed, pending validation |
-| CLOSED | Validated and closed |
-| WONT_FIX | Decision not to fix |
-
----
-
-## Sample anomalies
-
-The dashboard is pre-loaded with 10 realistic anomalies sourced from the other three portfolio projects, covering ETL, Datalake, and SQL validation contexts.
-
----
+# Stats for dashboard
+print(tracker.get_stats())
+```
 
 ## Stack
 
-Python / SQLite / HTML + CSS
-
----
-
-## Author
-
-Imane Moussafir — Data & BI Engineer
+Python, SQLite, HTML/CSS
