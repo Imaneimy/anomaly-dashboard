@@ -62,4 +62,5 @@ print(tracker.get_stats())
 
 ## Stack
 
-Python, SQLite, HTML/CSS
+Python, Python, SQLite, HTML/CSS
+
